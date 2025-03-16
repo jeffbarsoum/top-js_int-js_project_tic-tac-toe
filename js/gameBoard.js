@@ -1,10 +1,24 @@
-const gameBoard =  (
+const createGameBoard =  (
     (size = 3) => {
-        const matrix = initMatrix();
-
         const piece = (row, col, player = null, piece = null) => {
             return { player, piece, row, col };
         }
+
+        const matrix = initMatrix();
+        // (
+        //     () => {
+        //     const result = [];
+        //     for (let row = 0; row < size; row++) {
+        //         result.push([])
+        //         for (let col = 0; col < size; col++) {
+        //             result[row].push(piece(row, col));
+        //         }
+        //     }
+
+        //     return result;
+        // })();
+
+
 
         const setPiece = (player, piece, row, col) => {
             if (!(isSquareEmpty(row, col))) {
@@ -16,10 +30,11 @@ const gameBoard =  (
         }
 
         const getPiece = (row, col) => {
-            return matrix[row][col]
+            console.log(matrix)
+            return matrix.at(row).at(col) 
         }
 
-        const initMatrix = () => {
+        function initMatrix() {
             const result = [];
             for (let row = 0; row < size; row++) {
                 result.push([])
@@ -44,9 +59,18 @@ const gameBoard =  (
         const isSquareEmpty = (row, col) => {
             return !(getPiece(row, col).player);
         }
+
+        const getEmptySquares = () => { 
+            const returnMatrix = [];
+            matrix.forEach((row) => row.forEach((cell) => {
+                if (isSquareEmpty(cell.row, cell.col)) returnMatrix.push(cell);
+            })); 
+            return returnMatrix;
+        }
         
         const isPiecesEqual = (pieceArray) => {
-            return pieceArray.every(cell => cell.piece === pieceArray[0].piece);
+            console.log(pieceArray)
+            return pieceArray.every(cell => !isSquareEmpty(cell.row, cell.col) && cell.piece === pieceArray[0].piece);
         }
 
         const winResult = (player, win, array) => {
@@ -65,9 +89,14 @@ const gameBoard =  (
                 // if we don't find a win in a row, push another
                 // cell into the left and right diagonal arrays, for
                 // checking later
+                console.log(`iswin: get matrix ids '${rowNum}, ${rowNum}' and '${rowNum}, ${-(rowNum + 1)}'`)
                 winLeftDiag.push(getPiece(rowNum, rowNum));
-                winRightDiag.push(getPiece(rowNum, -rowNum));
+                winRightDiag.push(getPiece(rowNum, -(rowNum + 1)));
             });
+
+            console.log('iswin: diag arrays...')
+            console.log(winLeftDiag);
+            console.log(winRightDiag);
             
             // next, check diagonals 
             if (isPiecesEqual(winRightDiag)) return winResult(winRightDiag[0].player, 'rightDiag', winRightDiag);
@@ -83,6 +112,9 @@ const gameBoard =  (
             return false;
         }
 
-        return { setPiece, getPiece, isWin };
+        return { setPiece, getPiece, getEmptySquares, isWin };
     }
 )();
+
+
+export { createGameBoard }

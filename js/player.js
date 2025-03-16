@@ -2,10 +2,17 @@ const pieces = ['x', 'o'];
 
 const createPlayer = (name, pieceId) => {
     const _name = name;
-    const _pieceId = (pieceId) => {
-        const pieceIndex = pieces.findIndex((pc) => pc === pieceId);
-        return pieceIndex === -1 ? null : pieces.splice(pieceId).pop();
-    }
+    const _pieceId = (
+        () => {
+
+            const pieceIndex = pieces.findIndex((pc) => pc === pieceId);
+            // console.log(pieceIndex)
+            // console.log(pieces)
+
+            return pieceIndex === -1 ? null : pieces.splice(pieceIndex, 1).pop();
+    })();
+    console.log(pieces)
+    console.log(_pieceId)
 
     let _score = 0;
 
@@ -13,11 +20,9 @@ const createPlayer = (name, pieceId) => {
         throw(`Error! Piece '${pieceId}' is already taken`)
     }
 
-    const pieceId = () => {
-        return _pieceId;
-    }
+    const getPieceId = () => { return _pieceId; }
 
-    const score = () => {
+    const getScore = () => {
         return _score;
     }
 
@@ -25,10 +30,16 @@ const createPlayer = (name, pieceId) => {
         return _score++;
     }
 
+    const getName = () => { return _name };
+
+
     return {
-        pieceId,
-        score,
+        getPieceId,
+        getScore,
+        getName,
         addScore
-    }
-    
+    }   
 }
+
+
+export { createPlayer }
