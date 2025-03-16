@@ -5,19 +5,7 @@ const createGameBoard =  (
         }
 
         const matrix = initMatrix();
-        // (
-        //     () => {
-        //     const result = [];
-        //     for (let row = 0; row < size; row++) {
-        //         result.push([])
-        //         for (let col = 0; col < size; col++) {
-        //             result[row].push(piece(row, col));
-        //         }
-        //     }
-
-        //     return result;
-        // })();
-
+        let winResult;
 
 
         const setPiece = (player, piece, row, col) => {
@@ -36,6 +24,7 @@ const createGameBoard =  (
 
         function initMatrix() {
             const result = [];
+            
             for (let row = 0; row < size; row++) {
                 result.push([])
                 for (let col = 0; col < size; col++) {
@@ -44,6 +33,20 @@ const createGameBoard =  (
             }
 
             return result;
+        }
+
+        function getFinalMatrix() {
+            if (!winResult && getEmptySquares()) return false;
+
+            const finalMatrix = matrix.map((row) => row.map((cell) => cell))
+            resetGame()
+
+            return finalMatrix;
+        }
+
+        function resetGame() {
+            winResult = null;
+            matrix.forEach((row) => row.forEach((cell) => cell = piece(cell.row, cell.col)))
         }
 
         const transposeMatrix = () => {
@@ -65,7 +68,10 @@ const createGameBoard =  (
             matrix.forEach((row) => row.forEach((cell) => {
                 if (isSquareEmpty(cell.row, cell.col)) returnMatrix.push(cell);
             })); 
-            return returnMatrix;
+            // if (returnMatrix.length) return returnMatrix;
+
+            // if no empty squares found, return false
+            return returnMatrix.length ? returnMatrix : false;
         }
         
         const isPiecesEqual = (pieceArray) => {
@@ -73,42 +79,74 @@ const createGameBoard =  (
             return pieceArray.every(cell => !isSquareEmpty(cell.row, cell.col) && cell.piece === pieceArray[0].piece);
         }
 
-        const winResult = (player, win, array) => {
-            return { player, win, array };
+        const setWinResult = (player, win, array) => {
+            console.log('setting win result...: ', winResult)
+            if (winResult) return false;
+            console.log('setting win result, not set yet, continuing....')
+
+            const finalMatrix = getFinalMatrix();
+            if (!finalMatrix) return false;
+            console.log('setting win result, final matrix exists, continuning...')
+
+            winResult = { player, win, array, finalMatrix };
+            console.log('win result set, returning....', winResult)
+            return winResult;
         }
 
-        const isWin = () => {
-            // matrix.forEach(row => row.every(cell => cell === row[0]))
-            // if we don't find row matches, we'll fill these as we go
+        const getWinResult = () => { return winResult ? winResult : false }
+
+        function isWin() {
+            // first, check for horizontal wins
+            console.log('isWin running....')
+            const winRow = matrix.filter((row) => isPiecesEqual(row)).pop();
+            if (winRow && winRow.length) {
+                console.log('winning row found....: ', winRow);
+                setWinResult(winRow[0].player, `row${winRow[0].row}`, winRow);
+                return getWinResult();
+            }
+
+            // next, check diagonals
             const winLeftDiag = [];
             const winRightDiag = [];
-
-            // first, check for horizontal wins
             matrix.forEach((row, rowNum) => {
-                if (isPiecesEqual(row)) return winResult(row[0].player, `row${rowNum}`, row);
-                // if we don't find a win in a row, push another
-                // cell into the left and right diagonal arrays, for
-                // checking later
-                console.log(`iswin: get matrix ids '${rowNum}, ${rowNum}' and '${rowNum}, ${-(rowNum + 1)}'`)
+                // console.log(`iswin: get matrix ids '${rowNum}, ${rowNum}' and '${rowNum}, ${-(rowNum + 1)}'`)
                 winLeftDiag.push(getPiece(rowNum, rowNum));
                 winRightDiag.push(getPiece(rowNum, -(rowNum + 1)));
-            });
 
-            console.log('iswin: diag arrays...')
-            console.log(winLeftDiag);
-            console.log(winRightDiag);
-            
-            // next, check diagonals 
-            if (isPiecesEqual(winRightDiag)) return winResult(winRightDiag[0].player, 'rightDiag', winRightDiag);
-            if (isPiecesEqual(winLeftDiag)) return winResult(winLeftDiag[0].player, 'leftDiag', winLeftDiag);
-            
-            //finally, check columns, by transposing matrix and checking how we did for rows
-            const tMatrix = transposeMatrix();
-            tMatrix.forEach((col, colNum) => {
-                if (isPiecesEqual(col)) return winResult(col[0].player, `row${colNum}`, col);          
             })
 
-            // if no wins found, return false
+            if (winLeftDiag.length) {
+                console.log('leftDiag match...: ', winLeftDiag);
+                setWinResult(winLeftDiag[0].player, 'leftDiag', winLeftDiag);
+                return getWinResult();
+            }
+            if (winRightDiag.length) {
+                console.log('leftDiag match...: ', winRightDiag);
+                setWinResult(winRightDiag[0].player, 'rightDiag', winRightDiag);
+                return getWinResult();
+            }
+            
+            //next, check columns, by transposing matrix and checking how we did for rows
+            const tMatrix = transposeMatrix();
+            tMatrix.forEach((col, colNum) => {
+                if (isPiecesEqual(col)) return setWinResult(col[0].player, `row${colNum}`, col);          
+            })
+            const winCol = tMatrix.filter((col) => isPiecesEqual(col)).pop();
+            if (winCol.length) {
+                console.log('winning col found....: ', winCol);
+                setWinResult(winCol[0].player, `col${winCol[0].col}`, winCol);
+                return getWinResult();
+            }
+
+            // finally, if there are no empty squares AND no wins, this must be a draw
+            if (!getEmptySquares()) {
+                console.log('no wins found, no empty squares, its a draw...')
+                setWinResult('draw', 'draw', []);
+                return getWinResult();
+            }
+
+            // if no wins found, return false, we'll use that result to launch another turn
+            console.log('no wins found, next turn....')
             return false;
         }
 
