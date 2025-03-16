@@ -15,22 +15,28 @@ const game = (
             )
         ]
         let currentPlayer = players[0];
+        const gameResults = {}
 
         const playerTurn = () => {
             let turnResult;
+            const getEmptySquares = gameBoard.getEmptySquares();
+            if (!getEmptySquares) {
+                alert('no more empty squares...');
+                return 
+            }
             while (!turnResult) {
-                const getEmptySquares = gameBoard.getEmptySquares();
-                const msg = `Empty squares: ${getEmptySquares.map((piece) => `${piece.player} - (${piece.piece}): [${piece.row}, ${piece.col}]`)}`;
-                prompt(msg)
+                const msg = `Empty squares: ${getEmptySquares.map((piece) => `[${piece.row}, ${piece.col}]`)}`;
+                // alert(msg)
                 turnResult = gameBoard.setPiece(
-                    currentPlayer.getName(),
+                    currentPlayer,
                     currentPlayer.getPieceId(),
-                    Number(prompt(`${currentPlayer.getName()}, please enter the row you want to place your piece:`)),
-                    Number(prompt('Cool, now the column pls...:'))
+                    Number(prompt(`${msg}\n\n${currentPlayer.getName()}, please enter the row you want to place your piece:`)),
+                    Number(prompt(`${msg}\n\nCool, now the column pls...:`))
                 )
+
                 if (turnResult) break;
 
-                prompt('Hey, like, maybe select an empty square...');
+                alert('Hey, like, maybe select an empty square...');
             }
 
             //switch players
@@ -43,8 +49,12 @@ const game = (
             while(!(win)) {
                 playerTurn();
                 win = gameBoard.isWin();
+                console.log('gameboard, check win....')
+                console.log(win)
             }
-            prompt(`${win.player} wins!`)
+
+            gameResults[new Date().getTime()] = win
+            alert(`${win.player.getName()} wins!`)
         }
 
         return { play }
