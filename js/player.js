@@ -2,15 +2,7 @@ const pieces = ['x', 'o'];
 
 const createPlayer = (name, pieceId) => {
     const _name = name;
-    const _pieceId = (
-        () => {
-
-            const pieceIndex = pieces.findIndex((pc) => pc === pieceId);
-            // console.log(pieceIndex)
-            // console.log(pieces)
-
-            return pieceIndex === -1 ? null : pieces.splice(pieceIndex, 1).pop();
-    })();
+    const _pieceId = setPieceId(pieceId);
     console.log(pieces)
     console.log(_pieceId)
 
@@ -21,6 +13,14 @@ const createPlayer = (name, pieceId) => {
     }
 
     const getPieceId = () => { return _pieceId; }
+
+    function setPieceId(pieceId) {
+        const pieceIndex = pieces.findIndex((pc) => pc === pieceId);
+        // console.log(pieceIndex)
+        // console.log(pieces)
+
+        return pieceIndex === -1 ? null : pieces.splice(pieceIndex, 1).pop();
+    }
 
     const getScore = () => {
         return _score;
