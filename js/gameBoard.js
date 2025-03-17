@@ -6,7 +6,7 @@ const createGameBoard =  (
             return { player, piece, row, col };
         }
 
-        const matrix = initMatrix();
+        let matrix = initMatrix();
         let winResult;
 
 
@@ -20,7 +20,7 @@ const createGameBoard =  (
         }
 
         const getPiece = (row, col) => {
-            console.log(matrix)
+            // console.log(matrix)
             return matrix.at(row).at(col) 
         }
 
@@ -56,8 +56,13 @@ const createGameBoard =  (
         }
 
         function resetGame() {
+            console.log('resetting game...')
             winResult = null;
-            matrix.forEach((row) => row.forEach((cell) => cell = piece(cell.row, cell.col)))
+            // matrix.forEach((row, rowNum, matrix) => matrix[rowNum].forEach((cell, cellNum, row) => row[cellNum] = piece(cell.row, cell.col)))
+            matrix.length = 0
+            matrix = initMatrix();
+            console.log('game reset - winResult: ', winResult);
+            console.log('game reset - matrix: ', matrix)
         }
 
         const transposeMatrix = () => {
@@ -86,7 +91,7 @@ const createGameBoard =  (
         }
         
         const isPiecesEqual = (pieceArray) => {
-            console.log(pieceArray)
+            // console.log(pieceArray)
             return pieceArray.every(cell => !isSquareEmpty(cell.row, cell.col) && cell.piece === pieceArray[0].piece);
         }
 
@@ -161,7 +166,7 @@ const createGameBoard =  (
             return false;
         }
 
-        return { setPiece, getPiece, getEmptySquares, isWin };
+        return { setPiece, getPiece, getEmptySquares, isWin, resetGame, matrix };
     }
 )();
 

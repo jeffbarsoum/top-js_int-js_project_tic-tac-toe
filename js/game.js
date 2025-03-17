@@ -55,6 +55,11 @@ const game = (
 
             gameResults[new Date().getTime()] = win
             alert(`${win.player.getName()} wins!`)
+            console.log('game ended, gameResults status: ', gameResults)
+            win = null;
+            // console.log('game ended, print matrix...:', gameBoard.matrix)
+            gameBoard.resetGame();
+            // console.log('game ended, print matrix after external reset...:', gameBoard.matrix )
         }
 
         return { play }
