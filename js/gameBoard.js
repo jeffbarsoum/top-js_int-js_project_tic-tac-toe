@@ -1,3 +1,5 @@
+import { cloneObj } from './cloneObj.js'
+
 const createGameBoard =  (
     (size = 3) => {
         const piece = (row, col, player = null, piece = null) => {
@@ -38,9 +40,18 @@ const createGameBoard =  (
         function getFinalMatrix() {
             if (!winResult && getEmptySquares()) return false;
 
-            const finalMatrix = matrix.map((row) => row.map((cell) => cell))
-            resetGame()
+            const finalMatrix = cloneObj(matrix);
+            // finalMatrix.forEach((row, rowNum) => {
 
+            //     row.forEach((cell, colNum, row) => {
+            //         row[rowNum][colNum] = {}
+            //         Object.entries(matrix[rowNum][colNum]).forEach(([cellPropKey, cellPropVal]) => {
+            //             row[rowNum][colNum][cellPropKey] = cellPropVal
+            //         })
+            //     })
+            // });
+
+            // resetGame()
             return finalMatrix;
         }
 
