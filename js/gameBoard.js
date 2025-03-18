@@ -76,6 +76,9 @@ const createGameBoard =  (
         }
 
         const isSquareEmpty = (row, col) => {
+            if (row >= matrix.length) return false;
+            if (col >= matrix[0].length) return false;
+
             return !(getPiece(row, col).player);
         }
 
