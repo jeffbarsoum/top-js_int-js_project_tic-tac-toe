@@ -41,24 +41,12 @@ const createGameBoard =  (
             if (!winResult && getEmptySquares()) return false;
 
             const finalMatrix = cloneObj(matrix);
-            // finalMatrix.forEach((row, rowNum) => {
-
-            //     row.forEach((cell, colNum, row) => {
-            //         row[rowNum][colNum] = {}
-            //         Object.entries(matrix[rowNum][colNum]).forEach(([cellPropKey, cellPropVal]) => {
-            //             row[rowNum][colNum][cellPropKey] = cellPropVal
-            //         })
-            //     })
-            // });
-
-            // resetGame()
             return finalMatrix;
         }
 
         function resetGame() {
             console.log('resetting game...')
             winResult = null;
-            // matrix.forEach((row, rowNum, matrix) => matrix[rowNum].forEach((cell, cellNum, row) => row[cellNum] = piece(cell.row, cell.col)))
             matrix.length = 0
             matrix = initMatrix();
             console.log('game reset - winResult: ', winResult);
@@ -95,13 +83,19 @@ const createGameBoard =  (
         
         const isPiecesEqual = (pieceArray) => {
             // console.log(pieceArray)
-            return pieceArray.every(cell => !isSquareEmpty(cell.row, cell.col) && cell.piece === pieceArray[0].piece);
+            console.log('isPiecesEqual launched...')
+            console.log('isPiecesEqual -  pieceArray: ', pieceArray)
+            pieceArray.forEach(cell => console.log('isPiecesEqual -  pieceArray[cell]: ', cell))
+            pieceArray.forEach(cell => console.log('isPiecesEqual -  pieceArray[cell].piece: ', cell.piece))
+            pieceArray.forEach((cell, colNum, arr) => console.log('isPiecesEqual -  pieceArray[0].piece: ', arr[0].piece))
+            pieceArray.forEach(cell => console.log('isPiecesEqual -  !isSquareEmpty[cell]: ', !isSquareEmpty(cell.row, cell.col)))
+            return pieceArray.every((cell, _colNum, arr) => !isSquareEmpty(cell.row, cell.col) && cell.piece === arr[0].piece);
         }
 
         const setWinResult = (player, win, array) => {
-            console.log('setting win result...: ', winResult)
-            if (winResult) return false;
-            console.log('setting win result, not set yet, continuing....')
+            // console.log('setting win result...: ', winResult)
+            // if (winResult) return false;
+            // console.log('setting win result, not set yet, continuing....')
 
             const finalMatrix = getFinalMatrix();
             if (!finalMatrix) return false;
@@ -134,12 +128,12 @@ const createGameBoard =  (
 
             })
 
-            if (winLeftDiag.length) {
+            if (winLeftDiag.length && isPiecesEqual(winLeftDiag)) {
                 console.log('leftDiag match...: ', winLeftDiag);
                 setWinResult(winLeftDiag[0].player, 'leftDiag', winLeftDiag);
                 return getWinResult();
             }
-            if (winRightDiag.length) {
+            if (winRightDiag.length && isPiecesEqual(winRightDiag)) {
                 console.log('leftDiag match...: ', winRightDiag);
                 setWinResult(winRightDiag[0].player, 'rightDiag', winRightDiag);
                 return getWinResult();
@@ -151,7 +145,7 @@ const createGameBoard =  (
                 if (isPiecesEqual(col)) return setWinResult(col[0].player, `row${colNum}`, col);          
             })
             const winCol = tMatrix.filter((col) => isPiecesEqual(col)).pop();
-            if (winCol.length) {
+            if (winCol && winCol.length) {
                 console.log('winning col found....: ', winCol);
                 setWinResult(winCol[0].player, `col${winCol[0].col}`, winCol);
                 return getWinResult();
