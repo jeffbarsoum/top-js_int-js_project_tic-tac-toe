@@ -36,16 +36,17 @@ const game = (
                     Number(prompt(`${emptySquares}\n\nCool, now the column pls...:`))
                 )
 
-
+                
                 if (turnResult) break;
-
+                
                 alert('Hey, like, maybe select an empty square...');
-            }
+            }   
             players.nextPlayer();
         }
 
-        const play = () => {
+        const play = (_wins = [], _gameResults = {}, _gameStartTime = new Date().getTime()) => {
             let win;
+
             while(!(win)) {
                 playerTurn();
                 win = gameBoard.isWin();
@@ -58,8 +59,18 @@ const game = (
             // add players with scores to gameBoard win result for saving
             _wins.push({ ...win, players: players.getActivePlayers().map(player => player.getPlayer()) })
             win = null;
-            // console.log('game ended, print matrix...:', gameBoard.matrix)
-            gameBoard.resetGame();
+
+            let playAgain = confirm(`${players.getCurrentPlayer().getName()} wins!\n\nDo you want to play again?`)
+
+            if (playAgain) {
+                gameBoard.resetGame();
+                play(_wins, _gameResults, _gameStartTime);
+            } 
+
+            _gameResults[_gameStartTime] = _wins
+            console.log('game ended, print gameResults...:', _gameResults)
+            return _gameResults
+
             // console.log('game ended, print matrix after external reset...:', gameBoard.matrix )
         }
 
