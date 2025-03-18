@@ -1,21 +1,19 @@
 import { createGameBoard } from './gameBoard.js'
-import { createPlayer } from './player.js'
+import { createPlayers } from './player.js'
 
 const game = (
     () => {
         const gameBoard = createGameBoard;
-        const players = [
-            createPlayer(
-                'steve',
-                'x'
-            ),
-            createPlayer(
-                'alice',
-                'o'
-            )
-        ]
-        let currentPlayer = players[0];
-        const gameResults = {}
+        const players = createPlayers;
+        const gameResults = {};
+        const wins = [];
+
+        let gameStartTime;
+        let playCount = 0;
+        players.createPlayer('steve', 'x');
+        players.createPlayer('alice', 'o');
+        console.log(players.getActivePlayers().forEach(player => console.log(player.getPieceId())))
+
 
         const playerTurn = () => {
             let turnResult;
@@ -25,23 +23,25 @@ const game = (
                 return 
             }
             while (!turnResult) {
-                const msg = `Empty squares: ${getEmptySquares.map((piece) => `[${piece.row}, ${piece.col}]`)}`;
+                const emptySquares = `Empty squares: ${getEmptySquares.map((piece) => `[${piece.row}, ${piece.col}]`)}`;
+                const currentPlayer = players.getCurrentPlayer();
+                const name = currentPlayer.getName();
+                const pieceId = currentPlayer.getPieceId();
                 // alert(msg)
+
                 turnResult = gameBoard.setPiece(
-                    currentPlayer,
-                    currentPlayer.getPieceId(),
-                    Number(prompt(`${msg}\n\n${currentPlayer.getName()}, please enter the row you want to place your piece:`)),
-                    Number(prompt(`${msg}\n\nCool, now the column pls...:`))
+                    name,
+                    pieceId,
+                    Number(prompt(`${emptySquares}\n\n${name}, please enter the row you want to place your piece:`)),
+                    Number(prompt(`${emptySquares}\n\nCool, now the column pls...:`))
                 )
+
 
                 if (turnResult) break;
 
                 alert('Hey, like, maybe select an empty square...');
             }
-
-            //switch players
-            players.unshift(players.pop())   
-            currentPlayer = players[0]      
+            players.nextPlayer();
         }
 
         const play = () => {
@@ -53,9 +53,10 @@ const game = (
                 console.log(win)
             }
 
-            gameResults[new Date().getTime()] = win
-            alert(`${win.player.getName()} wins!`)
-            console.log('game ended, gameResults status: ', gameResults)
+            players.getCurrentPlayer().addScore();
+            
+            // add players with scores to gameBoard win result for saving
+            _wins.push({ ...win, players: players.getActivePlayers().map(player => player.getPlayer()) })
             win = null;
             // console.log('game ended, print matrix...:', gameBoard.matrix)
             gameBoard.resetGame();
