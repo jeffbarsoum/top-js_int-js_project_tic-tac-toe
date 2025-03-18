@@ -1,45 +1,85 @@
-const pieces = ['x', 'o'];
 
-const createPlayer = (name, pieceId) => {
-    const _name = name;
-    const _pieceId = setPieceId(pieceId);
-    console.log(pieces)
-    console.log(_pieceId)
+const createPlayers = (
+    () => {
+        const freePlayers = ['x', 'o'];
+        const activePlayers = [];
+        let currentPlayer;
 
-    let _score = 0;
+        const addActivePlayer = (player) => {
+            const pieceId = player.getPieceId()
+            if (!pieceId) {
+                throw(`Error! No pieceId!`)
+            }
 
-    if (!_pieceId) {
-        throw(`Error! Piece '${pieceId}' is already taken`)
+            const pieceIndex = freePlayers.findIndex((pc) => pc === pieceId);
+            if (pieceIndex === -1) {
+                throw(`Error! Piece '${pieceId}' is already taken`)
+            }
+
+            freePlayers.splice(pieceIndex, 1).pop();
+            activePlayers.push(player); 
+
+            if (!currentPlayer) currentPlayer = activePlayers[0];
+        }
+
+        const nextPlayer = () => {
+            activePlayers.unshift(activePlayers.pop())   
+            currentPlayer = activePlayers[0]   
+        }
+
+        function createPlayer(name, pieceId) {
+            const _name = name;
+            const _pieceId = pieceId;
+            let score = 0;
+
+
+
+        
+            const getPieceId = () => { return _pieceId; }
+        
+            const getScore = () => {
+                return score;
+            }
+        
+            const addScore = () => {
+                return score++;
+            }
+        
+            const getName = () => { return _name };
+        
+            const getPlayer = () => { return { name: getName(), pieceId: getPieceId(), score: getScore()  }}
+        
+        
+            const self = {
+                getPlayer,
+                addScore,
+                getPieceId,
+                getScore,
+                getName,
+            }
+
+            console.log(self)
+            addActivePlayer(self);
+            
+            return self;
+        }
+
+        const getFreePlayers = () => { return freePlayers; }
+
+        const getActivePlayers = () => { return activePlayers; }
+
+        const getCurrentPlayer = () => { return currentPlayer; }
+
+        return {
+            createPlayer,
+            nextPlayer,
+            getFreePlayers,
+            getActivePlayers,
+            getCurrentPlayer
+        }
     }
-
-    const getPieceId = () => { return _pieceId; }
-
-    function setPieceId(pieceId) {
-        const pieceIndex = pieces.findIndex((pc) => pc === pieceId);
-        // console.log(pieceIndex)
-        // console.log(pieces)
-
-        return pieceIndex === -1 ? null : pieces.splice(pieceIndex, 1).pop();
-    }
-
-    const getScore = () => {
-        return _score;
-    }
-
-    const addScore = () => {
-        return _score++;
-    }
-
-    const getName = () => { return _name };
+)();
 
 
-    return {
-        getPieceId,
-        getScore,
-        getName,
-        addScore
-    }   
-}
 
-
-export { createPlayer }
+export { createPlayers }
