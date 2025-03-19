@@ -66,9 +66,25 @@ const createPlayers = (
 
         const getFreePlayers = () => { return freePlayers; }
 
-        const getActivePlayers = () => { return activePlayers; }
+        const getActivePlayers = (includeAddScore = false) => { 
+            const _activePlayers = [];
+            for (const player of activePlayers) {
+                if (includeAddScore) {
+                    _activePlayers.push({ ...player.getPlayer(), addScore: player.addScore });
+                }
+                else {
+                    _activePlayers.push(player.getPlayer());
+                }
+            }
+            return _activePlayers;
+        }
 
-        const getCurrentPlayer = () => { return currentPlayer; }
+        const getCurrentPlayer = (includeAddScore = false) => { 
+            const _currentPlayer = includeAddScore ? 
+                { ...currentPlayer.getPlayer(), addScore: currentPlayer.addScore } 
+                : currentPlayer.getPlayer();
+            return _currentPlayer; 
+        }
 
         return {
             createPlayer,
