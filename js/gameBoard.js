@@ -38,7 +38,7 @@ const createGameBoard =  (
         }
 
         function getFinalMatrix() {
-            if (!winResult && getEmptySquares()) return false;
+            // if (!winResult && getEmptySquares()) return false;
 
             const finalMatrix = cloneObj(matrix);
             return finalMatrix;
@@ -49,8 +49,8 @@ const createGameBoard =  (
             winResult = null;
             matrix.length = 0
             matrix = initMatrix();
-            console.log('game reset - winResult: ', winResult);
-            console.log('game reset - matrix: ', matrix)
+            // console.log('game reset - winResult: ', winResult);
+            // console.log('game reset - matrix: ', matrix)
         }
 
         const transposeMatrix = () => {
@@ -83,12 +83,12 @@ const createGameBoard =  (
         
         const isPiecesEqual = (pieceArray) => {
             // console.log(pieceArray)
-            console.log('isPiecesEqual launched...')
-            console.log('isPiecesEqual -  pieceArray: ', pieceArray)
-            pieceArray.forEach(cell => console.log('isPiecesEqual -  pieceArray[cell]: ', cell))
-            pieceArray.forEach(cell => console.log('isPiecesEqual -  pieceArray[cell].piece: ', cell.piece))
-            pieceArray.forEach((cell, colNum, arr) => console.log('isPiecesEqual -  pieceArray[0].piece: ', arr[0].piece))
-            pieceArray.forEach(cell => console.log('isPiecesEqual -  !isSquareEmpty[cell]: ', !isSquareEmpty(cell.row, cell.col)))
+            // console.log('isPiecesEqual launched...')
+            // console.log('isPiecesEqual -  pieceArray: ', pieceArray)
+            // pieceArray.forEach(cell => console.log('isPiecesEqual -  pieceArray[cell]: ', cell))
+            // pieceArray.forEach(cell => console.log('isPiecesEqual -  pieceArray[cell].piece: ', cell.piece))
+            // pieceArray.forEach((cell, colNum, arr) => console.log('isPiecesEqual -  pieceArray[0].piece: ', arr[0].piece))
+            // pieceArray.forEach(cell => console.log('isPiecesEqual -  !isSquareEmpty[cell]: ', !isSquareEmpty(cell.row, cell.col)))
             return pieceArray.every((cell, _colNum, arr) => !isSquareEmpty(cell.row, cell.col) && cell.piece === arr[0].piece);
         }
 
@@ -99,7 +99,7 @@ const createGameBoard =  (
 
             const finalMatrix = getFinalMatrix();
             if (!finalMatrix) return false;
-            console.log('setting win result, final matrix exists, continuning...')
+            // console.log('setting win result, final matrix exists, continuning...')
 
             winResult = { player, win, array, finalMatrix };
             console.log('win result set, returning....', winResult)
