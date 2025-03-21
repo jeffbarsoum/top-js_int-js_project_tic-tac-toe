@@ -1,101 +1,176 @@
+// eslint-disable-next-line no-unused-vars
+import { createGameBoard } from "./gameBoard.js";
+/** @typedef {import { createGameBoard } from "./gameBoard.js";} */
 
-const createPlayers = (
-    () => {
-        const freePlayers = ['x', 'o'];
-        const activePlayers = [];
-        let currentPlayer;
+const player = (() => {
+  /** @type {string} */
+  let name;
+  /** @type {'x' | 'o'} */
+  let pieceId;
+  /** @type {'machine' | 'human'} */
+  let type;
+  let score = 0;
 
-        const addActivePlayer = (player) => {
-            const pieceId = player.getPieceId()
-            if (!pieceId) {
-                throw(`Error! No pieceId!`)
-            }
+  /**
+   *
+   * @param {number} row
+   * @param {number} col
+   * @param  {...{player: string | null, piece: 'x' | 'o' | null, type: 'machine' | 'human' | null}} args
+   * @returns {{player: string | null, piece: 'x' | 'o' | null, type: 'machine' | 'human' | null}}
+   */
+  const generatePiece = (row, col, ...args) => {
+    return { args, row, col };
+  };
 
-            const pieceIndex = freePlayers.findIndex((pc) => pc === pieceId);
-            if (pieceIndex === -1) {
-                throw(`Error! Piece '${pieceId}' is already taken`)
-            }
+  const setType = (tp) => {
+    type = tp;
+  };
 
-            freePlayers.splice(pieceIndex, 1).pop();
-            activePlayers.push(player); 
+  const getType = () => {
+    return type;
+  };
 
-            if (!currentPlayer) currentPlayer = activePlayers[0];
+  const setPieceId = (pId) => {
+    pieceId = pId;
+  };
+
+  const getPieceId = () => {
+    return pieceId;
+  };
+
+  const getScore = () => {
+    return score;
+  };
+
+  const addScore = () => {
+    return score++;
+  };
+
+  const setName = (nm) => {
+    name = nm;
+  };
+
+  const getName = () => {
+    return name;
+  };
+
+  const getPlayer = () => {
+    return {
+      name: getName(),
+      pieceId: getPieceId(),
+      type: getType(),
+      score: getScore(),
+    };
+  };
+
+  const createHumanPlayer = (name, pieceId) => {
+    setName(name);
+    setPieceId(pieceId);
+    setType("human");
+
+    return {
+      getPlayer,
+      addScore,
+      getPieceId,
+      getScore,
+      getName,
+      getType,
+    };
+  };
+
+  /**
+   * @param {createGameBoard} aiBoardRef
+   * @param {String} pieceId
+   * @param {String} name
+   */
+  const createMachinePlayer = (aiBoardRef, pieceId, name = null) => {
+    console.log("creating MachinePlayer...");
+    setName(name ?? "Botty" + " McBotFace");
+    setPieceId(pieceId);
+    setType("machine");
+    let matrix = aiBoardRef.matrix;
+
+    function setPiece() {
+      console.log("MachinePlayer: setting piece...");
+      const emptySquares = aiBoardRef.getEmptySquares();
+      if (!emptySquares) return false;
+
+      console.log("MachinePlayer: Empty squares...", emptySquares);
+
+      // create an array of arrays of every possible win
+      const decisionInputs = matrix
+        .getMatrix()
+        .concat(matrix.transposeMatrix())
+        .concat(Object.values(matrix.getDiags()));
+      const decisionMatrix = [];
+
+      console.log("MachinePlayer: Decision Inputs...", decisionInputs);
+
+      for (const vector of decisionInputs) {
+        // skip vectors without empty cells
+        console.log("MachinePlayer: Decision - checking vector...:", vector);
+        if (!vector.some((cell) => emptySquares.includes(cell))) continue;
+        console.log(
+          "MachinePlayer: Decision - Vector with empty squares found...:",
+          vector,
+        );
+
+        const isPossibleWin = vector
+          // of those cells which are not empty...
+          .filter((cell) => !matrix.isCellEmpty(cell.row, cell.col))
+          // does every cell belong to the machine player?
+          .every((cell) => cell.player === getName());
+        // add the empty squares of possible wins to decision matrix
+        if (isPossibleWin) {
+          decisionMatrix.concat(
+            vector.filter((cell) => emptySquares.includes(cell)),
+          );
         }
+      }
 
-        const nextPlayer = () => {
-            activePlayers.unshift(activePlayers.pop())   
-            currentPlayer = activePlayers[0]   
+      console.log("MachinePlayer: DecisionMatrix...", decisionMatrix);
+
+      const decisionArray = decisionMatrix.flat();
+      const cellCounts = decisionArray.reduce((coordCounts, cell) => {
+        const coord = `${cell.row}${cell.col}`;
+        const coordCount = coordCounts[coord] ?? 0;
+        coordCounts[coord] = coordCount + 1;
+
+        return coordCounts;
+      }, Object.create(null));
+
+      let maxCellCoord;
+      let maxCellCount = 0;
+      for (const [coord, count] of Object.entries(cellCounts)) {
+        if (count > maxCellCount) {
+          maxCellCoord = coord;
         }
+      }
 
-        function createPlayer(name, pieceId) {
-            const _name = name;
-            const _pieceId = pieceId;
-            let score = 0;
-
-
-
-        
-            const getPieceId = () => { return _pieceId; }
-        
-            const getScore = () => {
-                return score;
-            }
-        
-            const addScore = () => {
-                return score++;
-            }
-        
-            const getName = () => { return _name };
-        
-            const getPlayer = () => { return { name: getName(), pieceId: getPieceId(), score: getScore()  }}
-        
-        
-            const self = {
-                getPlayer,
-                addScore,
-                getPieceId,
-                getScore,
-                getName,
-            }
-
-            console.log(self)
-            addActivePlayer(self);
-            
-            return self;
-        }
-
-        const getFreePlayers = () => { return freePlayers; }
-
-        const getActivePlayers = (includeAddScore = false) => { 
-            const _activePlayers = [];
-            for (const player of activePlayers) {
-                if (includeAddScore) {
-                    _activePlayers.push({ ...player.getPlayer(), addScore: player.addScore });
-                }
-                else {
-                    _activePlayers.push(player.getPlayer());
-                }
-            }
-            return _activePlayers;
-        }
-
-        const getCurrentPlayer = (includeAddScore = false) => { 
-            const _currentPlayer = includeAddScore ? 
-                { ...currentPlayer.getPlayer(), addScore: currentPlayer.addScore } 
-                : currentPlayer.getPlayer();
-            return _currentPlayer; 
-        }
-
-        return {
-            createPlayer,
-            nextPlayer,
-            getFreePlayers,
-            getActivePlayers,
-            getCurrentPlayer
-        }
+      return aiBoardRef.setPiece(
+        getName(),
+        getPieceId(),
+        "machine",
+        parseInt(maxCellCoord[0]),
+        parseInt(maxCellCoord[1]),
+      );
     }
-)();
 
+    return {
+      setPiece,
+      getPlayer,
+      addScore,
+      getPieceId,
+      getScore,
+      getName,
+      getType,
+    };
+  };
 
+  return {
+    createHumanPlayer,
+    createMachinePlayer,
+  };
+})();
 
-export { createPlayers }
+export { player };
