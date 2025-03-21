@@ -44,8 +44,8 @@ const createMatrix = (size = 3) => {
         return { player, piece, type, row, col }
     }
 
-    function setCell(row, col, player = null, piece = null) {
-        matrix[row][col] = cell(row, col, player, piece);
+    function setCell(row, col, player = null, piece = null, type = null) {
+        matrix[row][col] = cell(row, col, player, piece, type);
     }
 
     /**
