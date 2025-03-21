@@ -26,11 +26,11 @@ const createGameBoard =  (
             return matrix.resetMatrix();
         }
 
-        const isSquareEmpty = (row, col) => {
-            if (row >= matrix.getMatrix(true).length) return false;
-            if (col >= matrix.getMatrix(true)[0].length) return false;
+        const isSquareEmpty = (row, col, byReference = true) => {
+            if (row >= matrix.getMatrix(byReference).length) return false;
+            if (col >= matrix.getMatrix(byReference)[0].length) return false;
 
-            return !(getPiece(row, col, true).player);
+            return !(getPiece(row, col, byReference).player);
         }
 
         /**
@@ -40,7 +40,7 @@ const createGameBoard =  (
          */
         const getEmptySquares = (byReference = true) => { 
             const returnMatrix = [];
-            matrix.getMatrix(true).forEach((row) => row.forEach((cell) => {
+            matrix.getMatrix(byReference).forEach((row) => row.forEach((cell) => {
                 if (isSquareEmpty(cell.row, cell.col)) returnMatrix.push(cell);
             })); 
 
