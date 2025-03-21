@@ -118,13 +118,18 @@ const createMatrix = (size = 3) => {
         return diags;
     }
 
+    function isCellEmpty(row, col) {
+        return !!getCell(row,col)
+    }
+
     return { 
         getMatrix,
         resetMatrix,
         transposeMatrix,
         getDiags,
         getCell,
-        setCell
+        setCell,
+        isCellEmpty
     }
 }
 
