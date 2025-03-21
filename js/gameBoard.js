@@ -98,7 +98,7 @@ const createGameBoard =  (
             return false;
         }
 
-        return { setPiece, getPiece, getEmptySquares, isWin, resetGame };
+        return { setPiece, getPiece, getEmptySquares, isWin, resetGame, matrix };
     }
 )();
 
