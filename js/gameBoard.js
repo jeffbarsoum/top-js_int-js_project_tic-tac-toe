@@ -7,11 +7,11 @@ const createGameBoard =  (
         let winResult;
 
 
-        const setPiece = (player, piece, row, col) => {
+        const setPiece = (player, piece, type, row, col) => {
             if (!(isSquareEmpty(row, col))) {
                 return false;
             }
-            matrix.setCell(row, col, player, piece)
+            matrix.setCell(row, col, player, piece, type)
 
             return true;
         }
