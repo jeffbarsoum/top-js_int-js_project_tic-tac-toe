@@ -33,7 +33,12 @@ const createGameBoard =  (
             return !(getPiece(row, col, true).player);
         }
 
-        const getEmptySquares = () => { 
+        /**
+         * 
+         * @param {boolean} byReference 
+         * @returns {{player: string | null, piece: string | null, row: number, col: number}[] | false}
+         */
+        const getEmptySquares = (byReference = true) => { 
             const returnMatrix = [];
             matrix.getMatrix(true).forEach((row) => row.forEach((cell) => {
                 if (isSquareEmpty(cell.row, cell.col)) returnMatrix.push(cell);

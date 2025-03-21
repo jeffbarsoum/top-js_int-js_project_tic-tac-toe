@@ -3,7 +3,9 @@ import { cloneObj } from './cloneObj.js';
 const createMatrix = (size = 3) => {
     let matrix = initMatrix();
 
-
+    /**
+     * @returns {{player: string | null, piece: string | null, row: number, col: number}[][]}
+     */
     function initMatrix() {
         const _matrix = [];
         
@@ -17,24 +19,61 @@ const createMatrix = (size = 3) => {
         return _matrix;
     }
 
-    function getMatrix(byReference = false) {
+    /**
+     * @returns {{player: string | null, piece: string | null, row: number, col: number}[][]}
+     */
+    function getMatrix(byReference = true) {
         if (byReference) return matrix;
         return cloneObj(matrix);
     }
 
-    function cell(row, col, player = null, piece = null) {
-        return { row, col, player, piece }
+    /**
+     * 
+     * @param {number} row 
+     * @param {number} col 
+     * @param {string | null} player 
+     * @param {string | null} piece 
+     * @returns {{
+     *  player: string | null, 
+     *  piece: 'x' | 'o' | null, 
+     *  type: 'machine' | 'human' | null, 
+     *  row: number, col: number
+     * }}
+     */
+    function cell(row, col, player = null, piece = null, type = null) {
+        return { player, piece, type, row, col }
     }
 
     function setCell(row, col, player = null, piece = null) {
         matrix[row][col] = cell(row, col, player, piece);
     }
 
+    /**
+     * 
+     * @param {number} row 
+     * @param {number} col 
+     * @param {boolean} byReference 
+     * @returns {{
+     *  player: string | null, 
+     *  piece: 'x' | 'o' | null, 
+     *  type: 'machine' | 'human' | null, 
+     *  row: number, col: number
+     * }}
+     */
     function getCell(row, col, byReference = false) {
         if (byReference) return matrix.at(row).at(col)
         return cloneObj(matrix.at(row).at(col));
     }
 
+    /**
+     * 
+     * @returns {{
+     *  player: string | null, 
+     *  piece: 'x' | 'o' | null, 
+     *  type: 'machine' | 'human' | null, 
+     *  row: number, col: number
+     * }[][]}
+     */
     function resetMatrix() {
         const finalMatrix = cloneObj(matrix);
         matrix.length = 0;
@@ -42,6 +81,15 @@ const createMatrix = (size = 3) => {
         return finalMatrix;
     }
 
+    /**
+     * 
+     * @returns {{
+     *  player: string | null, 
+     *  piece: 'x' | 'o' | null, 
+     *  type: 'machine' | 'human' | null, 
+     *  row: number, col: number
+     * }[][]}
+     */
     function transposeMatrix() {
         const winCol = initMatrix();
         for (let row = 0; row < matrix.length; row++) {
@@ -52,7 +100,15 @@ const createMatrix = (size = 3) => {
         return winCol;
     }
 
-    function getDiags(byReference = false) {
+    /**
+     * 
+     * @param {boolean} byReference 
+     * @returns {{
+     *      leftDiag: {player: string | null, piece: 'x' | 'o' | null, type: 'machine' | 'human' | null, row: number, col: number}[],
+     *      rightDiag: {player: string | null, piece: 'x' | 'o' | null, type: 'machine' | 'human' | null, row: number, col: number}[],
+     * }}
+     */
+    function getDiags(byReference = true) {
         const diags = {leftDiag: [], rightDiag: []}
         getMatrix(byReference).forEach((row, rowNum)  => {
             diags.leftDiag.push(getCell(rowNum, rowNum, byReference));
