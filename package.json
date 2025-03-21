@@ -1,0 +1,23 @@
+{
+  "name": "top-js_int-js_project_tic-tac-toe",
+  "version": "1.0.0",
+  "description": "Tic Tac Toe!",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "jeffbarsoum-github.com:jeffbarsoum/top-js_int-js_project_tic-tac-toe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "eslint": "^8.57.1",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "prettier-eslint": "^16.3.0"
+  }
+}
