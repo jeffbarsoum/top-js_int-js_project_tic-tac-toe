@@ -7,16 +7,16 @@ const createMatrix = (size = 3) => {
      * @returns {{player: string | null, piece: string | null, row: number, col: number}[][]}
      */
     function initMatrix() {
-        const _matrix = [];
+        const matrix = [];
         
         for (let row = 0; row < size; row++) {
-            _matrix.push([])
+            matrix.push([])
             for (let col = 0; col < size; col++) {
                 const [player, piece] = [null, null]
-                _matrix[row].push(cell(row, col, player, piece));
+                matrix[row].push(cell(row, col, player, piece));
             }
         }
-        return _matrix;
+        return matrix;
     }
 
     /**
