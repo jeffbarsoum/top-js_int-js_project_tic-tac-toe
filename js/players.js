@@ -11,33 +11,6 @@ const createPlayers = (() => {
   /**@type {ReturnType<typeof createHumanPlayer> | ReturnType<typeof createMachinePlayer>}  */
   let currentPlayer;
 
-  //   const addActivePlayer = (name = null, pieceId = null, aiBoardRef = null) => {
-  //     // const pieceId = player.getPieceId()
-  //     // activePlayers.push(player.createMachinePlayer(aiBoardRef, pieceId, name))
-  //     if (name && !pieceId) {
-  //       throw `Error! No pieceId!`;
-  //     }
-
-  //     const pieceIndex = pieceId
-  //       ? 0
-  //       : freePlayers.findIndex((pc) => pc === pieceId);
-  //     if (pieceIndex === -1) {
-  //       throw `Error! Piece '${pieceId}' is already taken`;
-  //     }
-
-  //     pieceId = freePlayers[pieceIndex];
-
-  //     const newPlayer =
-  //       aiBoardRef === null
-  //         ? player.createHumanPlayer(name, pieceId)
-  //         : player.createMachinePlayer(aiBoardRef, pieceId, name);
-
-  //     freePlayers.splice(pieceIndex, 1).pop();
-  //     activePlayers.push(newPlayer);
-
-  //     if (!currentPlayer) currentPlayer = activePlayers[0];
-  //   };
-
   /**
    *
    * @param {'x' | 'o'} pieceId
@@ -77,13 +50,8 @@ const createPlayers = (() => {
   };
 
   const nextPlayer = () => {
-    console.log("nextPlayer launched...");
-    console.log("nextPlayer: activePlayers before shift...: ", activePlayers);
-    console.log("nextPlayer: currentPlayer before shift...: ", currentPlayer);
     activePlayers.unshift(activePlayers.pop());
     currentPlayer = activePlayers[0];
-    console.log("nextPlayer: activePlayers after shift...: ", activePlayers);
-    console.log("nextPlayer: currentPlayer after shift...: ", currentPlayer);
   };
 
   const getFreePlayers = () => {

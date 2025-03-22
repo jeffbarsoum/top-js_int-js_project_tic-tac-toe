@@ -106,12 +106,6 @@ const createMatrix = (size = 3) => {
     const pieces = [];
     for (const row of matrix) {
       for (const cell of row) {
-        console.log("getPieces() - pieces:", pieces);
-        console.log("getPieces() - cell:", cell);
-        console.log(
-          "getPieces() - piece not found",
-          pieces.find((piece) => piece === cell.piece) === -1,
-        );
         if (pieces.find((piece) => piece === cell.piece) > -1) continue;
         pieces.push(cell.piece);
       }
@@ -120,8 +114,6 @@ const createMatrix = (size = 3) => {
   }
 
   function isCellEmpty(row, col) {
-    // console.log("matrix.isCellEmpty runnin...");
-    // console.log("matrix.isCellEmpty - getCell(row, col): ", getCell(row, col));
     return !getCell(row, col).player;
   }
 

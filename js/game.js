@@ -6,24 +6,9 @@ const game = (() => {
   const gameBoard = createGameBoard;
   const players = createPlayers;
   const gameResults = {};
-  // const wins = [];
 
-  // let gameStartTime;
-  // let playCount = 0;
   players.addActiveHumanPlayer("alice", "o");
   players.addActiveMachinePlayer("steve", "x", gameBoard);
-  console.log(
-    "game(): players.getActivePlayers() [after adding one human and one machine]...: ",
-    players.getActivePlayers().map((plr) => plr.getPlayer()),
-  );
-
-  console.log("game(): players.getActivePlayers()", players.getActivePlayers());
-  console.log(
-    "game(): players.getActivePlayers().getType()",
-    players.getActivePlayers().map((plr) => plr.getType()),
-  );
-
-  // const addPlayCount = () => { return playCount++ }
 
   const playerTurn = () => {
     let turnResult;
@@ -35,11 +20,8 @@ const game = (() => {
     while (!turnResult) {
       const emptySquares = `Empty squares: ${getEmptySquares.map((piece) => `[${piece.row}, ${piece.col}]`)}`;
       const currentPlayer = players.getCurrentPlayer();
-      // alert(msg)
 
       const currentType = currentPlayer.getType();
-      console.log("playerTurn: currentPlayer", currentPlayer);
-      console.log("playerTurn: currentType", currentType);
       if (currentType === "machine") {
         console.log("playerTurn: this is a machine player...:", currentPlayer);
         turnResult = currentPlayer.setPiece();
@@ -58,11 +40,9 @@ const game = (() => {
         );
       }
 
-      console.log("playerTurn: turnResult...:", turnResult);
       if (turnResult) break;
 
       const cancelGame = confirm("Hey, like, maybe select an empty square...");
-      console.log("playerTurn: cancelGame? :", cancelGame);
       if (!cancelGame) return false;
     }
     return true;
@@ -77,12 +57,8 @@ const game = (() => {
         .every((player, i, arr) => player.getScore() === arr[0].getScore())
     )
       return "draw";
-    console.log(
-      "getWinner launched - getActivePlayers()",
-      players.getActivePlayers(),
-    );
+
     players.getActivePlayers().forEach((player) => {
-      console.log("getWinner launced...player: ", player);
       if (player.getScore() > winningScore) {
         winningScore = player.getScore();
         winner = player;
@@ -103,15 +79,11 @@ const game = (() => {
       if (!turn) return;
       if (turn) players.nextPlayer();
       win = gameBoard.isWin();
-      console.log("gameboard, check win....");
-      console.log(win);
-      //   if (!win) players.nextPlayer();
+      console.log("gameboard, check win....: ", win);
     }
 
     if (win.win !== "draw") players.getCurrentPlayer(true).addScore();
-    // console.log('game.play = playCount before...: ', playCount)
     playCount++;
-    // console.log('game.play = playCount after...: ', playCount)
 
     // add players with scores to gameBoard win result for saving
     wins.push(win);
