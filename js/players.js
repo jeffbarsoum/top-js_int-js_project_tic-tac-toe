@@ -1,14 +1,12 @@
-import { player } from "./player.js";
+import { createHumanPlayer } from "./player/playerHuman.js";
+import { createMachinePlayer } from "./player/playerMachine.js";
 import { cloneObj } from "./cloneObj.js";
 
 const createPlayers = (() => {
-  const createMachinePlayer = player().createMachinePlayer;
-  const createHumanPlayer = player().createHumanPlayer;
-
   const freePlayers = ["x", "o"];
-  /**@type {(ReturnType<player().createHumanPlayer> | ReturnType<player().createMachinePlayer>)[]}  */
+  /**@type {(ReturnType<typeof createHumanPlayer> | ReturnType< typeof createMachinePlayer>)[]}  */
   const activePlayers = [];
-  /**@type {ReturnType<typeof createHumanPlayer> | ReturnType<typeof createMachinePlayer>}  */
+  /**@type {ReturnType<typeof createHumanPlayer> | ReturnType< typeof createMachinePlayer>}  */
   let currentPlayer;
 
   /**
